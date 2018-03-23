@@ -6,9 +6,8 @@ import urllib
 
 class HTTPLookupService(LookupService):
 
-    _required_keys = ['key']
-
-    def __init__(self, endpoint):
+    def __init__(self, endpoint, required_keys=None):
+        self.required_keys = required_keys or []
         self.endpoint = endpoint
 
     def initialize(self, context):
@@ -26,4 +25,4 @@ class HTTPLookupService(LookupService):
         pass
 
     def getRequiredKeys(self):
-        return set(self._required_keys)
+        return set(self.required_keys)
