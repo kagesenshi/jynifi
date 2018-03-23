@@ -3,7 +3,7 @@ import sys, os
 
 version = '0.1'
 
-setup(name='nifipy',
+setup(name='jynifi',
       version=version,
       description="Reusable NiFi Jython Scripts",
       long_description="""\
@@ -12,7 +12,7 @@ setup(name='nifipy',
       keywords='jython nifi',
       author='Izhar Firdaus',
       author_email='kagesenshi.87@gmail.com',
-      url='http://github.com/kagesenshi/nifipy',
+      url='http://github.com/kagesenshi/jynifi',
       license='MIT',
       packages=find_packages(exclude=['ez_setup', 'examples', 'tests']),
       include_package_data=True,
