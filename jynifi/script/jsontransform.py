@@ -48,7 +48,8 @@ def jsontransform(session, REL_SUCCESS, REL_FAILURE, transformRule,
         dest = json.loads(open(skel[7:]).read())
     else:
         dest = json.loads(skel)
-    tc = TransformCallback(engine, rule, dest)
+
+    tc = TransformCallback(Engine(), rule, dest)
     ff = session.get()
     session.write(ff, tc)
     session.transfer(ff, REL_SUCCESS)
