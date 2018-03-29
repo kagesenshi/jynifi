@@ -27,7 +27,7 @@ class TransformCallback(StreamCallback):
     def process(self, inputStream, outputStream):
         src = json.loads(IOUtils.toString(inputStream, StandardCharsets.UTF_8))
         dest = self.engine.remap(self.rule, src, self.dest)
-        outputStream.write(bytearray(json.dumps(dest)))
+        outputStream.write(json.dumps(dest))
 
 
 def jsontransform(session, REL_SUCCESS, REL_FAILURE, transformRule,
