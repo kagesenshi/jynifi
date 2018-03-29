@@ -43,7 +43,11 @@ def jsontransform(session, REL_SUCCESS, REL_FAILURE, transformRule,
         Engine.commit()
     
     rule = yaml.load(transformRule.getValue())
-    dest = json.loads(outputSkeleton.getValue())
+    skel = outputSkeleton.getValue()
+    if skel.startswith('file://'):
+        dest = json.loads(open(skel[7:]).read())
+    else:
+        dest = json.loads(skel)
     tc = TransformCallback(engine, rule, dest)
     ff = session.get()
     session.write(ff, tc)
