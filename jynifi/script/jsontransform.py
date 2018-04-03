@@ -31,17 +31,21 @@ class TransformCallback(StreamCallback):
 
 
 def jsontransform(session, REL_SUCCESS, REL_FAILURE, transformRule,
-        outputSkeleton, extensionModules):
+                  outputSkeleton, extensionModules):
 
+    ff = session.get()
+
+    if ff is None:
+        return
 
     mods = []
     for m in extensionModules.getValue().split(','):
         n = os.path.basename(m)[:-2]
         mods.append(imp.load_source(n, m))
-    
+
     if not Engine.is_committed():
         Engine.commit()
-    
+
     rule = yaml.load(transformRule.getValue())
     skel = outputSkeleton.getValue()
     if skel.startswith('file://'):
@@ -50,6 +54,6 @@ def jsontransform(session, REL_SUCCESS, REL_FAILURE, transformRule,
         dest = json.loads(skel)
 
     tc = TransformCallback(Engine(), rule, dest)
-    ff = session.get()
+
     session.write(ff, tc)
     session.transfer(ff, REL_SUCCESS)
