@@ -19,7 +19,7 @@ class HTTPLookupService(LookupService):
         if r.status_code == 200:
             j = r.json()
             return Optional.ofNullable(j['value'])
-        return Optional.ofNullable(None)
+        raise Exception('Fail!')
 
     def getPropertyDescriptors(self):
         pass
