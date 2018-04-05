@@ -16,6 +16,8 @@ from java.nio.charset import StandardCharsets
 from org.apache.nifi.processor.io import StreamCallback
 from rulez.transformer import Engine
 
+class JSONDecodeError(Exception):
+    pass
 
 class TransformCallback(StreamCallback):
 
@@ -25,7 +27,10 @@ class TransformCallback(StreamCallback):
         self.dest = copy.deepcopy(dest)
 
     def process(self, inputStream, outputStream):
-        src = json.loads(IOUtils.toString(inputStream, StandardCharsets.UTF_8))
+        try:
+            src = json.loads(IOUtils.toString(inputStream, StandardCharsets.UTF_8))
+        except ValueError, e:
+            raise JSONDecodeError()
         dest = self.engine.remap(self.rule, src, self.dest)
         outputStream.write(bytearray(json.dumps(dest)))
 
@@ -53,7 +58,11 @@ def jsontransform(session, REL_SUCCESS, REL_FAILURE, transformRule,
     else:
         dest = json.loads(skel)
 
-    tc = TransformCallback(Engine(), rule, dest)
+    try:
+        tc = TransformCallback(Engine(), rule, dest)
+    except JSONDecodeError, e:
+        session.transfer(ff, REL_FAILURE)
+        return
 
     session.write(ff, tc)
     session.transfer(ff, REL_SUCCESS)
