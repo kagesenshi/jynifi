@@ -12,4 +12,4 @@ def qs_to_attributes(session, REL_SUCCESS, REL_FAILURE):
             for k, v in parsed.items():
                 session.putAttribute(ff, 'http.GET.%s' % k, v[0])
 
-    session.transfer(ff, REL_SUCCESS)
+        session.transfer(ff, REL_SUCCESS)
