@@ -54,7 +54,7 @@ def jsontransform(session, REL_SUCCESS, REL_FAILURE, transformRule,
     if not Engine.is_committed():
         Engine.commit()
 
-    rule = yaml.load(transformRule.getValue())
+    rule = yaml.load(transformRule.evaluateAttributeExpressions(ff).getValue())
     skel = outputSkeleton.getValue()
     if skel.startswith('file://'):
         dest = json.loads(open(skel[7:]).read())
