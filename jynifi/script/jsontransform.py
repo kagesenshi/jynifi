@@ -41,31 +41,33 @@ class TransformCallback(StreamCallback):
 def jsontransform(session, REL_SUCCESS, REL_FAILURE, transformRule,
                   outputSkeleton, extensionModules):
 
-    ff = session.get()
+    ffl = session.get(100)
 
-    if ff is None:
+    if ffl.isEmpty():
         return
 
-    mods = []
-    for m in extensionModules.getValue().split(','):
-        n = os.path.basename(m)[:-2]
-        mods.append(imp.load_source(n, m))
-
-    if not Engine.is_committed():
-        Engine.commit()
-
-    rule = yaml.load(transformRule.evaluateAttributeExpressions(ff).getValue())
-    skel = outputSkeleton.getValue()
-    if skel.startswith('file://'):
-        dest = json.loads(open(skel[7:]).read())
-    else:
-        dest = json.loads(skel)
-
-    tc = TransformCallback(Engine(), rule, dest)
-
-    try:
-        session.write(ff, tc)
-    except JSONDecodeError, e:
-        session.transfer(ff, REL_FAILURE)
-        return
-    session.transfer(ff, REL_SUCCESS)
+    for ff in ffl:
+    
+        mods = []
+        for m in extensionModules.getValue().split(','):
+            n = os.path.basename(m)[:-2]
+            mods.append(imp.load_source(n, m))
+    
+        if not Engine.is_committed():
+            Engine.commit()
+    
+        rule = yaml.load(transformRule.evaluateAttributeExpressions(ff).getValue())
+        skel = outputSkeleton.getValue()
+        if skel.startswith('file://'):
+            dest = json.loads(open(skel[7:]).read())
+        else:
+            dest = json.loads(skel)
+    
+        tc = TransformCallback(Engine(), rule, dest)
+    
+        try:
+            session.write(ff, tc)
+        except JSONDecodeError, e:
+            session.transfer(ff, REL_FAILURE)
+            return
+        session.transfer(ff, REL_SUCCESS)

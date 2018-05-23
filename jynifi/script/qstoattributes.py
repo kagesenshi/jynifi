@@ -2,9 +2,12 @@ from urlparse import parse_qs
 
 
 def qs_to_attributes(session, REL_SUCCESS, REL_FAILURE):
-    ff = session.get()
+    ffl = session.get(100)
 
-    if ff is not None:
+    if ffl.isEmpty():
+        return
+
+    for ff in ffl:
         qs = ff.getAttribute('http.query.string')
         if qs:
             parsed = parse_qs(qs)
